@@ -1,24 +1,55 @@
-// import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, ScrollView, FlatList, SafeAreaView} from 'react-native';
+
+import GoalItem from './components/GoalItem'
+import GoalInput from './components/GoalInput'
 
 export default function App() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  goalButtonHandler = (enteredGoal) => {
+    setCourseGoals(currentGoals => [...currentGoals, enteredGoal])
+  }
+
+  deleteGoalHandler = (goalIndex) => {
+    setCourseGoals(currentGoals => {
+      return currentGoals.filter((goal, index) => index !== goalIndex);
+    });
+  }
+
+  openModalHandler = () => {
+    setModalVisible(true);
+  }
+
+  closeModelHandler = () => {
+    setModalVisible(false);
+  }
+
   return (
-    <View style={styles.container}>
-      {/* <View>
-        <Text>Hiiiiiiii</Text>
+    <>
+    <StatusBar style='auto' /> 
+    <SafeAreaView style={styles.container}>
+      <Button title="Add Goal" onPress={openModalHandler} />
+      { modalVisible && 
+        <GoalInput 
+          modalVisible={modalVisible} 
+          goalButtonHandler={goalButtonHandler} 
+          closeModelHandler={closeModelHandler}
+        />
+      }
+      <View style={styles.goalsContaner}>
+        <FlatList 
+          keyExtractor={(item, index) => index.toString()}
+          data={courseGoals}
+          renderItem={itemData => (
+            <GoalItem title={itemData} deleteGoalHandler={deleteGoalHandler}/>
+          )} />
       </View>
-      <Text style={styles.dummyText} >Hello World!</Text>
-      <Button title="Click Me" onPress={() => alert('Button Clicked')} /> */}
-      {/* <StatusBar style="auto" /> */}
-      <View style={styles.inputContainer}>
-        <TextInput placeholder="Your Goal..." style={styles.testInput}/>
-        <Button title="Add Goal" onPress={() => alert('Button Clicked')} />
-      </View>
-      <View>
-        <Text>Goal List</Text>
-      </View>
-    </View>
-  );
+    </SafeAreaView>
+    </>
+  );  
 }
 
 const styles = StyleSheet.create({
@@ -27,26 +58,11 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     // alignItems: 'center',
     // justifyContent: 'center',
-    padding: 50,
+    // paddingTop: 50,
+    marginHorizontal: 16,
+    marginTop: 50,
   },
-  inputContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  testInput: {
-    width: '80%',
-    borderColor: 'black',
-    borderWidth: 1,
-    padding: 10,
-    marginRight: 20,
-  },
-  dummyText: {
-    color: 'red',
-    fontSize: 20,
-    margin: 10,
-    padding: 10,
-    borderWidth: 2,
-    borderColor: 'blue',
+  goalsContaner: {
+    flex: 5
   }
 });
