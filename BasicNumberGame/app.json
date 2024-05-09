@@ -3,7 +3,7 @@
     "name": "BasicNumberGame",
     "slug": "BasicNumberGame",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default", // or "landscape" or "portrait"
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {

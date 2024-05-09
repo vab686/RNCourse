@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Alert, FlatList } from "react-native";
+import { Text, View, StyleSheet, Alert, FlatList, Dimensions , useWindowDimensions } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
 import Title from "../components/UI/Title";
@@ -25,7 +25,9 @@ function GameScreen(params) {
 	const initialGuess = generateRandomBetween(1, 100, params.userChoice);
 	const [currentGuess, setCurrentGuess] = useState(initialGuess)
 	const [guessRounds, setGuessRounds] = useState([initialGuess]);
-	
+
+	const {width, height} = useWindowDimensions();
+
 	useEffect(() => {
 		if( parseInt(currentGuess) === parseInt(params.userChoice)) {
 			// Game Over
@@ -55,11 +57,10 @@ function GameScreen(params) {
 
 	const guessRoundsListLength = guessRounds.length;
 
-	return(
-		<View style={styles.screen} >
-			<Title>Oppoent's Guess</Title>
+	let content = (
+		<>
 			<NumberContainer>{currentGuess}</NumberContainer>
-			<View>
+			<View style={styles.card}>
 				<Text style={styles.text}>Higher Or Lower ?</Text>
 				<View style={styles.buttonsContainer}>
 					<View style={styles.buttonContainer}>
@@ -70,6 +71,33 @@ function GameScreen(params) {
 					</View>
 				</View>
 			</View>
+		</>
+	)
+
+	if (width > 500) {
+		content = (
+			<>
+				<Text style={styles.text}>Higher Or Lower ?</Text>
+				<View style={styles.buttonContainerWide}>
+					<View style={styles.buttonContainer}>
+						<PrimaryButton onPress={() => nextGuessHandler('lower')}><Ionicons name="remove" size={24} color="white" /></PrimaryButton>
+					</View>
+					<View>
+						<NumberContainer>{currentGuess}</NumberContainer>
+					</View>
+					<View style={styles.buttonContainer}>
+						<PrimaryButton onPress={() => nextGuessHandler('greater')}><Ionicons name="add" size={24} color="white" /></PrimaryButton>
+					</View>
+				</View>
+			</>
+		)
+	}
+
+
+	return(
+		<View style={styles.screen} >
+			<Title>Oppoent's Guess</Title>
+			{content}
 			<View style={styles.listContainer}>
 				<FlatList
 					keyExtractor={(item, index) => index.toString()}
@@ -77,6 +105,7 @@ function GameScreen(params) {
 					renderItem={itemData => (
 						<GuessLogItem rounds={guessRoundsListLength - itemData.index} guess={itemData.item}></GuessLogItem>
 					)}
+					showsVerticalScrollIndicator={false} // does not show the scroll bar
 				/>
 			</View>	
 		</View>
@@ -88,7 +117,8 @@ export default GameScreen;
 const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
-		padding: 24,
+		margin: 40,
+		alignItems: 'center',
 	},
 	title: {
 		fontSize: 24,
@@ -112,8 +142,27 @@ const styles = StyleSheet.create({
 	buttonContainer: {
 		flex: 1,
 	},
+	buttonContainerWide: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
 	listContainer: {
 		flex: 1,
 		paddingBottom: 24,
-	}
+	},
+	card: {
+		marginHorizontal: 24,
+		padding: 16,
+		marginTop: 24,
+		elevation: 5,
+		borderRadius: 10,
+		backgroundColor: 'transparent',
+		shadowColor: 'black',
+		shadowOffset: { width: 0, height: 2 },
+		shadowRadius: 6,
+		shadowOpacity: 0.25,
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
 })

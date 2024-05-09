@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, ScrollView } from 'react-native';
 
 import Title from '../components/UI/Title';
 import PrimaryButton from '../components/UI/PrimaryButton';
 
 function GameOverScreen(params) {
   return (
+    <ScrollView>
     <View style={styles.screen}>
       <Title>Game Over!</Title>
       <View style={styles.imageContainer}>
@@ -16,10 +17,13 @@ function GameOverScreen(params) {
       </Text>
       <PrimaryButton onPress={params.onRestart}>Restart</PrimaryButton>
     </View>
+    </ScrollView>
   )
 }
 
 export default GameOverScreen;
+
+const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   screen: {
@@ -29,15 +33,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: 300,
-    height: 300,
+    width: windowWidth < 380 ? 150 : 300,
+    height: windowWidth < 380 ? 150 : 300,
     // justifyContent: 'center',
     // alignItems: 'center',
     overflow: 'hidden',
     borderWidth: 3,
-    margin: 40,
-    borderRadius: 150,
+    margin: windowWidth < 380 ? 20 : 40,
+    borderRadius: windowWidth < 380 ? 75 : 150,
     borderColor: 'black',
+
   },
   image: {
     width: '100%',
