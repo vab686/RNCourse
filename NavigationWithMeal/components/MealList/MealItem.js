@@ -1,14 +1,14 @@
 import { View, StyleSheet, Pressable, Image, Text, Platform } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-import MealDetails from './MealDetails'
+import MealDetails from '../MealDetails'
 
 function MealItem(params) {
 	const navigation = useNavigation()
 
 	const selectedMealHandler = () => {
 		navigation.navigate('MealDetail', {
-			mealId: params.itemData.id
+			mealId: params.id
 		})
 	}
 
@@ -17,14 +17,14 @@ function MealItem(params) {
 			<Pressable 
 				android_ripple={{color: '#ccc'}} 
 				style={({pressed}) => pressed ? styles.buttonPressed : null}
-				title={params.itemData.title} 
+				title={params.title} 
 				onPress={selectedMealHandler} 
 			>
 				<View>
-					<Image source={{uri: params.itemData.imageUrl}} style={styles.image}/>
-					<Text style={styles.title}>{params.itemData.title}</Text>
+					<Image source={{uri: params.imageUrl}} style={styles.image}/>
+					<Text style={styles.title}>{params.title}</Text>
 				</View>
-				<MealDetails itemData={params.itemData} />
+				<MealDetails itemData={params} />
 			</Pressable>
 		</View>
 	)
