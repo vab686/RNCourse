@@ -1,5 +1,6 @@
 import {useContext, useLayoutEffect} from 'react'
 import { Text, View, StyleSheet, Image, ScrollView, Button } from 'react-native'
+import { useSelector, useDispatch } from 'react-redux'
 
 import { MEALS } from '../data/dummy-data'
 import MealDetails from '../components/MealDetails'
@@ -7,20 +8,25 @@ import List from '../components/MealDetail/List'
 import Subtitle from '../components/MealDetail/Subtitle'
 import IconButton from '../components/IconButton'
 import { FavouritesContext } from '../store/context/favourites-context'
+import { addFavoriate, removeFavoriate } from '../store/redux/favoriates'
 
 function MealDetailScreen(params) {
-	const favouritesMealCtx = useContext(FavouritesContext)
-	const mealId = params.route.params.mealId
+	// const favouritesMealCtx = useContext(FavouritesContext)
+  const favouritesMealCtx = useSelector(state => state.favoriatesMeals.ids)
+  const mealId = params.route.params.mealId
+  const dispatch = useDispatch()
 
 	const selectedMeal = MEALS.find((meal) => meal.id === mealId)
 
-	const mealIsFavourite = favouritesMealCtx.ids.includes(mealId)
+	const mealIsFavourite = favouritesMealCtx.includes(mealId)
 
 	const favouriteHandler = () => {
 		if (mealIsFavourite) {
-			favouritesMealCtx.removeFromFavourites(mealId)
+			// favouritesMealCtx.removeFromFavourites(mealId)
+      dispatch(removeFavoriate(mealId))
 		} else {
-			favouritesMealCtx.addToFavourites(mealId)
+			// favouritesMealCtx.addToFavourites(mealId)
+      dispatch(addFavoriate(mealId))
 		}
 	}
 
