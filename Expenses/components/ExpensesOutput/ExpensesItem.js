@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { GloablStyles } from "../../constants/styles";
 
-function ManageExpenses({id, discription, date, amount}) {
+function ManageExpenses({id, description, date, amount}) {
   const navigation = useNavigation();
 
   function expensePressHandler() {
@@ -16,7 +16,7 @@ function ManageExpenses({id, discription, date, amount}) {
     >
       <View style={styles.expensesItem}>
         <View>
-          <Text style={[styles.textBase, styles.discription]}>{discription}</Text>
+          <Text style={[styles.textBase, styles.description]}>{description}</Text>
           <Text style={styles.textBase}>{date.toString() }</Text>
           </View>
           <View style={styles.amountContainer}>
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   textBase: {
     color: GloablStyles.colors.primary50,
   },
-  discription: {
+  description: {
     fontSize: 16,
     marginBottom: 4,
     fontWeight: 'bold'

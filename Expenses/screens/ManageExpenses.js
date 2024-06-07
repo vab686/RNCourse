@@ -1,13 +1,16 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import IconButton from '../UI/IconButton';
 import { GloablStyles } from '../constants/styles';
-import Button from '../UI/Button';
+import { ExpensesContext } from '../store/expenses-context';
+import ExpensesForm from '../components/ManageExpenses/ExpensesForm';
 
 function ManageExpenses({route, navigation}) {
+  const expencesCtx = useContext(ExpensesContext)
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
+  const editedExpense = expencesCtx.expenses.find(expense => expense.id === editedExpenseId);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -16,6 +19,7 @@ function ManageExpenses({route, navigation}) {
   }, [navigation, isEditing])
 
   deleteExpenseHandler = () => {
+    expencesCtx.deleteExpense(editedExpenseId)
     navigation.goBack();
   }
 
@@ -23,16 +27,23 @@ function ManageExpenses({route, navigation}) {
     navigation.goBack();
   }
 
-  consfirmHandler = () => {
+  confirmHandler = (expenseData) => {
+    if (isEditing) {
+      expencesCtx.updateExpense(editedExpenseId, expenseData)
+    } else {
+      expencesCtx.addExpense(expenseData)
+    }
     navigation.goBack();
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button style={styles.buttonStyle} mode="flat" onPress={cancelHandler} >Cancel</Button>
-        <Button style={styles.buttonStyle} onPress={consfirmHandler} >{isEditing ? 'Update': 'Add'}</Button>
-      </View>
+      <ExpensesForm 
+        isEditing={isEditing} 
+        onCancel={cancelHandler} 
+        onSubmit={confirmHandler}
+        initialData={editedExpense}
+      />
       {
         isEditing &&  
         <View style={styles.deleteContainer}>
@@ -55,15 +66,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopColor: GloablStyles.colors.primary200,
     alignItems: 'center',
-  },
-  buttonContainer: {
-   flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonStyle: {
-    marginHorizontal: 12,
-    minWidth: 120,
   }
 })
 
