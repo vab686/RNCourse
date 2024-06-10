@@ -11,7 +11,7 @@ function ExpensesForm({isEditing, onCancel, onSubmit, initialData}) {
       isValid: !!initialData
     },
     date: {
-      value: initialData ? initialData.date.toISOString().slice(0, 10) : '',
+      value: initialData ? new Date(initialData.date).toISOString().slice(0, 10) : '',
       isValid: !!initialData
     },
     description: {

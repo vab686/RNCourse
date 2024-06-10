@@ -1,12 +1,17 @@
-import { useLayoutEffect, useContext } from 'react';
+import { useLayoutEffect, useContext, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import IconButton from '../UI/IconButton';
 import { GloablStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
 import ExpensesForm from '../components/ManageExpenses/ExpensesForm';
+import { storeExpenses, updateExpenses, deleteExpenses } from '../util/http';
+import LoadingOverlay from '../UI/LoadingOverlay';
+import ErrorOverlay from '../UI/ErrorOverlay';
 
 function ManageExpenses({route, navigation}) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
   const expencesCtx = useContext(ExpensesContext)
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
@@ -18,22 +23,52 @@ function ManageExpenses({route, navigation}) {
     });
   }, [navigation, isEditing])
 
-  deleteExpenseHandler = () => {
-    expencesCtx.deleteExpense(editedExpenseId)
-    navigation.goBack();
+  deleteExpenseHandler = async () => {
+    setIsLoading(true)
+    try {
+      expencesCtx.deleteExpense(editedExpenseId)
+      await deleteExpenses(editedExpenseId)
+      setIsLoading(false)
+      navigation.goBack();
+    } catch (error) {
+      setError('Something went wrong. Please try again later.')
+      setIsLoading(false)
+    }
   }
 
   cancelHandler = () => {
     navigation.goBack();
   }
 
-  confirmHandler = (expenseData) => {
-    if (isEditing) {
-      expencesCtx.updateExpense(editedExpenseId, expenseData)
-    } else {
-      expencesCtx.addExpense(expenseData)
+  confirmHandler = async (expenseData) => {
+    setIsLoading(true)
+    try {
+      if (isEditing) {
+        expencesCtx.updateExpense(editedExpenseId, expenseData)
+        await updateExpenses(editedExpenseId, expenseData)
+        setIsLoading(false)
+      } else {
+        const id = await storeExpenses(expenseData)
+        expencesCtx.addExpense({...expenseData, id: id})
+        setIsLoading(false)
+      }
+      navigation.goBack();
+    } catch (error) {
+      setError('Something went wrong. Please try again later.')
+      setIsLoading(false)
     }
-    navigation.goBack();
+  }
+
+  errorConfirmedHandler = () => {
+    setError(null)
+  }
+
+  if (isLoading) {
+    return <LoadingOverlay />
+  }
+
+  if (error) {
+    return <ErrorOverlay message={error} onConfirm={errorConfirmedHandler} />
   }
 
   return (

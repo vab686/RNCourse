@@ -1,23 +1,11 @@
 import { createContext, useReducer } from "react";
 
-const DummyData = [
-  { id: '1', description: 'Food', amount: 100, date: new Date(2024, 6, 1)},
-  { id: '2', description: 'Clothes', amount: 200, date: new Date(2024, 6, 2)},
-  { id: '3', description: 'Rent', amount: 500, date: new Date(2024, 6, 3)},
-  { id: '4', description: 'Groceries', amount: 300, date: new Date(2024, 6, 4)},
-  { id: '5', description: 'Transport', amount: 150, date: new Date(2021, 6, 18)},
-  { id: '6', description: 'Entertainment', amount: 200, date: new Date(2021, 6, 19)},
-  { id: '7', description: 'Health', amount: 200, date: new Date(2021, 6, 20)},
-  { id: '8', description: 'Education', amount: 300, date: new Date(2021, 6, 21)},
-  { id: '9', description: 'Other', amount: 100, date: new Date(2021, 6, 22)},
-  { id: '10', description: 'Other', amount: 100, date: new Date(2021, 6, 23)},
-]
-
 export const ExpensesContext = createContext({
   expenses: [],
   addExpense: (expense) => {},
   deleteExpense: (id) => {},
   updateExpense: (id, expense) => {},
+  setExpense: (expense) => {},
 })
 
 function expensesReducer(state, action) {
@@ -36,17 +24,23 @@ function expensesReducer(state, action) {
         const updatedExpenses = [...state];
         updatedExpenses[updatableExpenseIndex] = updateItem;
       return updatedExpenses //state.map(expense => expense.id === action.payload.id ? action.payload : expense);
+    case 'SET':
+      const invertedExpenses = action.payload.reverse();
+      return invertedExpenses;
     default:
       return state;
   }
 }
 
 function ExpensesContextProvider({ children }) {
-  const [expensesState, dispatch] = useReducer(expensesReducer, DummyData);
+  const [expensesState, dispatch] = useReducer(expensesReducer, []);
 
   const addExpenseHandler = (expense) => {
-    expense.id = Math.floor((Math.random()*1000000)+1);
     dispatch({ type: 'ADD', payload: expense });
+  }
+
+  const setExpenseHandler = (expense) => {
+    dispatch({ type: 'SET', payload: expense });
   }
 
   const deleteExpenseHandler = (id) => {
@@ -62,6 +56,7 @@ function ExpensesContextProvider({ children }) {
     addExpense: addExpenseHandler,
     deleteExpense: deleteExpenseHandler,
     updateExpense: updateExpenseHandler,
+    setExpense: setExpenseHandler,
   }
 
   return (
