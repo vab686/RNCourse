@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "NavigationWithMeal",
+    "name": "My Recipe Book",
     "slug": "NavigationWithMeal",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,16 +13,25 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "buildNumber": "1.0.0",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vaibhav.hypact.NavigationWithMeal"
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.vaibhav.hypact.NavigationWithMeal"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "07c59eaf-4cfb-4284-ab3f-07fd844a3f8b"
+      }
     }
   }
 }
